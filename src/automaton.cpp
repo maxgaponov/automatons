@@ -166,5 +166,11 @@ std::ostream& operator<<(std::ostream& os, const Automaton& atm) {
             }
         }
     }
+    os << "Terminal:";
+    for (int vertex = 0; vertex < atm.get_size(); ++vertex) {
+        if (atm.is_terminal(vertex)) {
+            os << " " << vertex;
+        }
+    }
     return os;
 }

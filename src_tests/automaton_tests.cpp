@@ -100,5 +100,5 @@ TEST(test_dfa, gtest_long_regex) {
     atm.set_terminal(2);
     atm.set_terminal(3);
     atm.set_terminal(5);
-    tester(atm, test_long_regex, 7);
+    tester(atm, test_long_regex, 6);
 }
