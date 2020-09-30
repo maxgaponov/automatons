@@ -10,6 +10,7 @@ public:
     Automaton();
     Automaton(size_t size, int start_vertex);
     Automaton determined() const;
+    Automaton minimized() const;
     bool is_word_in_language(const std::string& word) const;
     std::set<int> get_next_state(const std::set<int>& state, char letter) const;
     void add_edge(int first_vertex, int second_vertex, char letter);
@@ -20,6 +21,8 @@ public:
     int get_start_vertex() const;
     char get_first_letter() const;
     char get_last_letter() const;
+    bool is_terminal(int vertex) const;
+    bool is_terminal(const std::set<int>& state) const;
 private:
     char first_letter_ = 'a';
     char last_letter_ = 'b';
@@ -28,10 +31,10 @@ private:
     std::vector<std::map<char, std::set<int>>> edges_;
     std::vector<bool> terminal_;
 
-    bool is_terminal(const std::set<int>& state) const;
     template<class ForwardIterator>
     std::set<int> get_finish_state_(std::set<int> state, ForwardIterator start, ForwardIterator finish) const;
-    int build_dfa_subgraph(Automaton& atm, const std::set<int>& state, std::map<std::set<int>, int>& indices, int& cur_index) const;
+    int build_dfa_subgraph_(Automaton& atm, const std::set<int>& state, std::map<std::set<int>, int>& indices, int& cur_index) const;
+    void minimize_iteration_(std::vector<int>& color) const;
 
 friend std::ostream& operator<<(std::ostream& os, const Automaton& atm);
 };
