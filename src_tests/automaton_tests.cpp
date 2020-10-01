@@ -81,7 +81,7 @@ void test_long_regex(const Automaton& atm) {
     EXPECT_FALSE(atm.is_word_in_language("ababaab"));
 }
 
-TEST(test_dfa, gtest_long_regex) {
+TEST(test_atm, gtest_long_regex) {
     // (ab)*a* + ((a+b)^2)*
     Automaton atm(6, 0);
     atm.add_edge(0, 1, 'a');

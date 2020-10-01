@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <vector>
 #include <set>
@@ -8,6 +9,7 @@
 class Automaton {
 public:
     Automaton();
+    Automaton(const std::string& regex);
     Automaton(size_t size, int start_vertex);
     Automaton determined() const;
     Automaton minimized() const;
@@ -23,6 +25,8 @@ public:
     char get_last_letter() const;
     bool is_terminal(int vertex) const;
     bool is_terminal(const std::set<int>& state) const;
+    std::set<char> letters() const;
+    void remove_terminals();
 private:
     char first_letter_ = 'a';
     char last_letter_ = 'b';

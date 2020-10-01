@@ -1,6 +1,11 @@
 #include <automaton.h>
+#include <automaton_regex.h>
 
 Automaton::Automaton() = default;
+
+Automaton::Automaton(const std::string &regex) {
+    *this = build_automaton_from_regex(regex.begin(), regex.end());
+}
 
 Automaton::Automaton(size_t size, int start_vertex) : size_(size), start_vertex_(start_vertex), edges_(size), terminal_(size) {}
 
@@ -21,7 +26,7 @@ Automaton Automaton::minimized() const {
     } while (prev_size != next_size);
     Automaton result(next_size, color[atm.get_start_vertex()]);
     for (int v = 0; v < atm.get_size(); ++v) {
-        for (char letter = atm.get_first_letter(); letter <= atm.get_last_letter(); ++letter) {
+        for (char letter : atm.letters()) {
             int dest_v = *atm.get_next_state({v}, letter).begin();
             result.add_edge(color[v], color[dest_v], letter);
         }
@@ -38,7 +43,7 @@ void Automaton::minimize_iteration_(std::vector<int>& color) const {
     std::vector<std::vector<int>> cfg(get_size());
     for (int v = 0; v < get_size(); ++v) {
         cfg[v].push_back(color[v]);
-        for (char letter = get_first_letter(); letter <= get_last_letter(); ++letter) {
+        for (char letter : letters()) {
             int dest_v = *get_next_state({v}, letter).begin();
             cfg[v].push_back(color[dest_v]);
         }
@@ -76,7 +81,7 @@ int Automaton::build_dfa_subgraph_(Automaton& atm, const std::set<int> &state, s
     if (is_terminal(state)) {
         atm.set_terminal(state_index);
     }
-    for (char letter = first_letter_; letter <= last_letter_; ++letter) {
+    for (char letter : letters()) {
         int dest_index = build_dfa_subgraph_(atm, get_next_state(state, letter), indices, cur_index);
         atm.add_edge(state_index, dest_index, letter);
     }
@@ -153,11 +158,23 @@ bool Automaton::is_terminal(int vertex) const {
     return terminal_[vertex];
 }
 
+void Automaton::remove_terminals() {
+    std::fill(terminal_.begin(), terminal_.end(), false);
+}
+
+std::set<char> Automaton::letters() const {
+    std::set<char> result;
+    for (char letter = first_letter_; letter <= last_letter_; ++letter) {
+        result.insert(letter);
+    }
+    return result;
+}
+
 std::ostream& operator<<(std::ostream& os, const Automaton& atm) {
     os << "Automaton\n";
     os << "Size = " << atm.get_size() << '\n';
     for (int vertex = 0; vertex < atm.get_size(); ++vertex) {
-        for (char letter = atm.first_letter_; letter <= atm.last_letter_; ++letter) {
+        for (char letter : atm.letters()) {
             auto it = atm.edges_[vertex].find(letter);
             if (it != atm.edges_[vertex].end()) {
                 for (int dest_vertex : it->second) {

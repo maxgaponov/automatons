@@ -1,25 +1,14 @@
 #include <automaton.h>
 #include <iostream>
+#include <string>
 
-void minimize_automaton(std::istream& in, std::ostream& out) {
-    int size, edge_cnt, terminal_cnt, start_vertex;
-    in >> size >> edge_cnt >> terminal_cnt >> start_vertex;
-    Automaton atm(size, start_vertex);
-    for (int i = 0; i < edge_cnt; ++i) {
-        int vertex_from, vertex_to;
-        char letter;
-        in >> vertex_from >> vertex_to >> letter;
-        atm.add_edge(vertex_from, vertex_to, letter);
-    }
-    for (int i = 0; i < terminal_cnt; ++i) {
-        int vertex;
-        in >> vertex;
-        atm.set_terminal(vertex);
-    }
-    out << atm.minimized();
+void automaton_by_regex(std::istream& in, std::ostream& out) {
+    std::string regexp_str;
+    in >> regexp_str;
+    out << Automaton(regexp_str).minimized() << std::endl;
 }
 
 int main() {
-    minimize_automaton(std::cin, std::cout);
+    automaton_by_regex(std::cin, std::cout);
     return 0;
 }
