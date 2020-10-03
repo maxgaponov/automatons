@@ -67,3 +67,32 @@ TEST(text_regex, complex_regex) {
     EXPECT_FALSE(atm.is_word_in_language("bba"));
     EXPECT_FALSE(atm.is_word_in_language("aab"));
 }
+
+TEST(text_regex, complex_regex2) {
+    Automaton atm("(a+b)*(aa(a+b)*bb+aba)b*ab*");
+    EXPECT_TRUE(atm.is_word_in_language("aabba"));
+    EXPECT_TRUE(atm.is_word_in_language("abaab"));
+    EXPECT_TRUE(atm.is_word_in_language("abaa"));
+    EXPECT_FALSE(atm.is_word_in_language("babb"));
+    EXPECT_FALSE(atm.is_word_in_language("aaaaaaa"));
+    EXPECT_FALSE(atm.is_word_in_language("babab"));
+    EXPECT_FALSE(atm.is_word_in_language("aab"));
+    EXPECT_FALSE(atm.is_word_in_language("baa"));
+}
+
+void atm_diff(const Automaton& atm1, const Automaton& atm2, const std::string& str) {
+    EXPECT_NE(atm1.is_word_in_language(str), atm2.is_word_in_language(str));
+}
+
+TEST(text_regex, inv_regex) {
+    Automaton pre_atm("(a(ab+b(ba)*a)*)*");
+    Automaton atm = pre_atm.inversed();
+    atm_diff(pre_atm, atm, "aabba");
+    atm_diff(pre_atm, atm, "abaab");
+    atm_diff(pre_atm, atm, "abaa");
+    atm_diff(pre_atm, atm, "babb");
+    atm_diff(pre_atm, atm, "aaaaaaa");
+    atm_diff(pre_atm, atm, "babab");
+    atm_diff(pre_atm, atm, "aab");
+    atm_diff(pre_atm, atm, "baa");
+}

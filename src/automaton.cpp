@@ -39,6 +39,23 @@ Automaton Automaton::minimized() const {
     return result;
 }
 
+Automaton Automaton::inversed() const {
+    Automaton atm = determined();
+    std::vector<bool> new_terminals(atm.get_size());
+    for (int v = 0; v < atm.get_size(); ++v) {
+        if (!atm.is_terminal(v)) {
+            new_terminals[v] = true;
+        }
+    }
+    atm.remove_terminals();
+    for (int v = 0; v < atm.get_size(); ++v) {
+        if (new_terminals[v]) {
+            atm.set_terminal(v);
+        }
+    }
+    return atm;
+}
+
 void Automaton::minimize_iteration_(std::vector<int>& color) const {
     std::vector<std::vector<int>> cfg(get_size());
     for (int v = 0; v < get_size(); ++v) {
@@ -183,6 +200,7 @@ std::ostream& operator<<(std::ostream& os, const Automaton& atm) {
             }
         }
     }
+    os << "Start: " << atm.get_start_vertex() << "\n";
     os << "Terminal:";
     for (int vertex = 0; vertex < atm.get_size(); ++vertex) {
         if (atm.is_terminal(vertex)) {

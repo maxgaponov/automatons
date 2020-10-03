@@ -13,6 +13,7 @@ public:
     Automaton(size_t size, int start_vertex);
     Automaton determined() const;
     Automaton minimized() const;
+    Automaton inversed() const;
     bool is_word_in_language(const std::string& word) const;
     std::set<int> get_next_state(const std::set<int>& state, char letter) const;
     void add_edge(int first_vertex, int second_vertex, char letter);
